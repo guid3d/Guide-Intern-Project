@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "reactnavigation1",
-    "slug": "reactnavigation1",
+    "name": "Guide-Intern-Project",
+    "slug": "guide-intern-project",
     "platforms": [
       "ios",
       "android",
@@ -23,6 +23,7 @@
     ],
     "ios": {
       "supportsTablet": true
-    }
+    },
+    "description": ""
   }
 }

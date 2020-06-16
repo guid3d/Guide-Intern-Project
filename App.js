@@ -1,19 +1,85 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import * as React from "react";
+import { View, Text, Button, Image, SafeAreaView } from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
+import {
+  createStackNavigator,
+  CardStyleInterpolators,
+  TransitionPresets,
+} from "@react-navigation/stack";
 
-export default function App() {
+import { enableScreens } from 'react-native-screens'
+import { createNativeStackNavigator } from 'react-native-screens/native-stack';
+enableScreens();
+
+import StockListScreen from "./components/StockList";
+import StockDetailsScreen from "./components/StockDetail";
+import StockChecklistScreen from "./components/StockChecklist";
+import { client } from "./components/Query";
+
+import { ApolloProvider } from "react-apollo";
+
+const Stack = createNativeStackNavigator();
+const RootStack = createStackNavigator();
+
+const StackScreen = () => {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-    </View>
+    <Stack.Navigator
+      initialRouteName="Home"
+      screenOptions={{
+        title: "Jitta Ranking",
+        headerStyle: {
+          backgroundColor: "#47c6f1",
+        },
+        headerTintColor: "#fff",
+        headerTitleStyle: {
+          fontWeight: "bold",
+        },
+        headerLargeTitle: true
+      }}
+    >
+      <Stack.Screen
+        name="Home"
+        component={StockListScreen}
+        // options={{ headerTitle: props => <LogoTitle {...props} /> }}
+        // options={{
+        //   headerRight: () => (
+        //     <Button
+        //       onPress={() => alert("This  is a button!")}
+        //       title="Info"
+        //       color="#fff"
+        //     />
+        //   ),
+        // }}
+      />
+      <Stack.Screen
+        name="Details"
+        component={StockDetailsScreen}
+        // options={({ route }) => ({ title: route.params.itemId })}
+        options={({ route }) => ({ title: route.params.itemId})}
+      />
+    </Stack.Navigator>
+  );
+};
+
+function App() {
+  return (
+    <ApolloProvider client={client}>
+      <NavigationContainer>
+        <RootStack.Navigator headerMode="none">
+          <RootStack.Screen name="Main" component={StackScreen} />
+          <RootStack.Screen
+            name="StockChecklistModal"
+            component={StockChecklistScreen}
+            options={{
+              gestureEnabled: true,
+              cardOverlayEnabled: true,
+              ...TransitionPresets.ModalPresentationIOS,
+            }}
+          />
+        </RootStack.Navigator>
+      </NavigationContainer>
+    </ApolloProvider>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default App;
