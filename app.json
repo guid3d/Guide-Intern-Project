@@ -30,6 +30,7 @@
       "package": "com.guid3d.guide_intern_project",
       "versionCode": 1
     },
-    "description": ""
+    "description": "",
+    "entryPoint": "node_modules/expo/AppEntry.js"
   }
 }
