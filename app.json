@@ -22,8 +22,15 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.guid3d.guide-intern-project",
+      "buildNumber": "0.0.1"
     },
-    "description": ""
+    "android": {
+      "package": "com.guid3d.guide_intern_project",
+      "versionCode": 1
+    },
+    "description": "",
+    "entryPoint": "node_modules/expo/AppEntry.js"
   }
 }

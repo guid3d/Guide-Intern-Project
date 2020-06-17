@@ -4,6 +4,7 @@ import {
   StyleSheet,
   Text,
   View,
+  SafeAreaView,
 } from "react-native";
 
 import { StockByRanking } from "./Query";
