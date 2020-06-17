@@ -33,7 +33,10 @@ const StackScreen = () => {
         headerTitleStyle: {
           fontWeight: "bold",
         },
-        headerLargeTitle: true
+        headerLargeTitle: true,
+        navigationOptions: {
+          gestureEnabled: false
+        },
       }}
     >
       <Stack.Screen

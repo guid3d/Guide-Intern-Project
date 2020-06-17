@@ -59,7 +59,7 @@ const ModalScreen = ({ route, navigation }) => {
         lineCap="round"
         arcSweepAngle={270}
         rotation={226.5}
-        duration={1000}
+        duration={2000}
 
         // renderCap={({ center }) => <Text>sdsd</Text>}
       >

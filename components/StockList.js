@@ -1,20 +1,17 @@
 import React from "react";
 import {
-  SafeAreaView,
-  TouchableOpacity,
   FlatList,
   StyleSheet,
   Text,
   View,
 } from "react-native";
-import Constants from "expo-constants";
 
 import { StockByRanking } from "./Query";
 
 import { Query } from "react-apollo";
 
-import { ListItem, Badge, SearchBar } from 'react-native-elements'
-import { TouchableWithoutFeedback } from "react-native-gesture-handler";
+import { ListItem, Badge } from 'react-native-elements'
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 var _ = require("lodash");
 
@@ -22,7 +19,7 @@ const StockList = ({ navigation }) => {
   const renderItem = ({ item }) => {
     const { id, title, stockId, jittaScore, nativeName, industry, rank} = item;
     return (
-      <TouchableWithoutFeedback
+      <TouchableOpacity
         onPress={() =>
           navigation.navigate("Details", {
             itemId: id,
@@ -45,7 +42,7 @@ const StockList = ({ navigation }) => {
           rightElement={<Badge value={jittaScore} badgeStyle={{ width: 50, height: 35 }} textStyle={{ fontSize: 17 }}/>}
         />
         {/* <Text style={styles.title}>{rank}. {title}</Text> */}
-      </TouchableWithoutFeedback>
+      </TouchableOpacity>
     );
   }
   return (
@@ -76,7 +73,6 @@ const StockList = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginBottom: Constants.statusBarHeight,
   },
   item: {
     backgroundColor: "#fff",
