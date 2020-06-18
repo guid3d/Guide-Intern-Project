@@ -6,7 +6,8 @@ import {
   Image,
   SafeAreaView,
   StyleSheet,
-  FlatList
+  FlatList,
+  ActivityIndicator
 } from "react-native";
 
 import { Query } from "react-apollo";
@@ -24,20 +25,18 @@ import { Divider } from 'react-native-elements';
 
 var _ = require("lodash");
 
-const JittaScoreQuery = gql`
-  query jittaScore($stockId: Int) {
+const JittaChecklistQuery = gql`
+  query jittaChecklist($stockId: Int) {
     stock(stockId: $stockId) {
       name
-      jitta {
-        score {
-          last {
-            value
-          }
+      checklist {
+        summary {
+          total
+          totalChecked
         }
-        priceDiff {
-          last {
-            value
-          }
+        data {
+          name
+          isChecked
         }
       }
     }
@@ -45,15 +44,23 @@ const JittaScoreQuery = gql`
 `;
 
 const ModalScreen = ({ route, navigation }) => {
-  const CircularChecklistProgress = () => {
+  const CircularChecklistProgress = ({total, totalChecked}) => {
+    var percentFill = (totalChecked/total)*100
+
+    const BarColor = () => {
+      if (percentFill > 60) return ("mediumaquamarine");
+      else if (percentFill > 30) return ("gold");
+      else return ("lightcoral")
+    }
+
     return (
       <AnimatedCircularProgress
         size={250}
         width={20}
         backgroundWidth={10}
-        fill={100}
-        tintColor="white"
-        tintColorSecondary="mediumaquamarine"
+        fill={percentFill}
+        tintColor={BarColor()}
+        // tintColorSecondary={BarColor()}
         backgroundColor="#808080"
         padding={10}
         lineCap="round"
@@ -63,23 +70,13 @@ const ModalScreen = ({ route, navigation }) => {
 
         // renderCap={({ center }) => <Text>sdsd</Text>}
       >
-        {(fill) => <Text style={styles.points}>{Math.round(fill)}%</Text>}
+        {(fill) => 
+        // <Text style={styles.points}>{totalChecked}/{total}</Text>
+        <Text style={styles.points}>{Math.round(fill)}%</Text>
+        }
       </AnimatedCircularProgress>
     );
   };
-
-  const DATAq = [
-    {
-      id: 1,
-      title: 'Jitta Score > 7',
-      check: true
-    },
-    {
-      id: 2,
-      title: 'Below Jitta Line > 20%',
-      check: false
-    }
-  ]
 
   const ChecklistItem = ({ title, check }) => {
     // console.log(check)
@@ -97,56 +94,44 @@ const ModalScreen = ({ route, navigation }) => {
 
   const { stockId } = route.params;
 
-  const JittaScoreIsMoreThanSeven = ({ stockChecklistData }) => {
-    if (stockChecklistData.jitta.score.last.value > 7) {
-      return <IconCheck />;
-    } else return <IconTimes />;
-  };
-
-  const BelowJittaLineMoreThan20Per = ({ stockChecklistData }) => {
-    if (stockChecklistData.jitta.priceDiff.last.value < -0.2)
-      return <IconCheck />;
-    else return <IconTimes />;
-  };
-
   return (
-    <Query query={JittaScoreQuery} variables={{ stockId: stockId }}>
+    <Query query={JittaChecklistQuery} variables={{ stockId: stockId }}>
       {({ loading, error, data }) => {
         const stockChecklistData = _.get(data, "stock", []);
+        const checklistSummary = _.get(data, "stock.checklist.summary", [])
+        const total  = checklistSummary.total;
+        const totalChecked = checklistSummary.totalChecked;
         // console.log(stockChecklistData);
-        if (loading) return <Text></Text>;
+        if (loading) return <View style={{flex:1 ,justifyContent:'center', alignItems:'center'}}><ActivityIndicator/></View>;
         if (error) return <Text>`Error! ${error.message}`</Text>;
         return (
           <View>
-            
             <View style={styles.closeModal}>
               <Button onPress={() => navigation.goBack()} title="Done" />
             </View>
             <View style={styles.container}>
               <Text style={styles.header}>{stockChecklistData.name}</Text>
-              <CircularChecklistProgress />
-              
-              {/* <FlatList
-                data={DATAq}
+              <CircularChecklistProgress
+                total={total}
+                totalChecked={totalChecked}
+              />
+              <FlatList
+                data={stockChecklistData.checklist.data}
                 renderItem={({ item }) => (
-                  <ChecklistItem title={item.title} check={item.check} />
+                  <ChecklistItem title={item.name} check={item.isChecked} />
                 )}
-                keyExtractor={item => item.id}
-              /> */}
-              <View style={styles.row}>
-                <Text>Jitta Score {">"} 7</Text>
-                <Text>
-                  <JittaScoreIsMoreThanSeven
-                    stockChecklistData={stockChecklistData}
-                  />
-                </Text>
-              </View>
-              <View style={styles.row}>
-                <Text>Below Jitta Line {">"} 20%</Text>
-                <Text>
-                  <BelowJittaLineMoreThan20Per
-                    stockChecklistData={stockChecklistData}
-                  />
+                keyExtractor={(item) => item.key}
+                style={{
+                  paddingBottom: 15,
+                  borderBottomWidth: 1,
+                  borderBottomColor: "#888",
+                }}
+              />
+              <View style={styles.rowTotal}>
+                <Text style={styles.textTotal}>Total</Text>
+                <Text style={styles.textTotal}>
+                  {totalChecked}/{total} (
+                  {Math.round((totalChecked / total) * 100)}%)
                 </Text>
               </View>
             </View>
@@ -165,17 +150,20 @@ const styles = StyleSheet.create({
     padding: 20,
     // paddingTop: 20,
   },
-  row: {
+  rowTotal: {
     flexDirection: "row",
     justifyContent: "space-between",
-    width: 300,
-    padding: 5,
+    width: 350,
+    padding: 6,
+    paddingTop: 15,
+  },
+  textTotal: {
+    fontWeight: 'bold',
   },
   rowFlatList: {
-    // flex: 0.4,
     flexDirection: "row",
     justifyContent: "space-between",
-    width: 300,
+    width: 350,
     padding: 6,
   },
   header: {
@@ -197,8 +185,6 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
     paddingRight: 10,
     paddingTop: 5,
-    
-    
   }
 });
 

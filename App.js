@@ -34,9 +34,6 @@ const StackScreen = () => {
           fontWeight: "bold",
         },
         headerLargeTitle: true,
-        navigationOptions: {
-          gestureEnabled: false
-        },
       }}
     >
       <Stack.Screen
@@ -76,6 +73,7 @@ function App() {
               gestureEnabled: true,
               cardOverlayEnabled: true,
               ...TransitionPresets.ModalPresentationIOS,
+              
             }}
           />
         </RootStack.Navigator>
