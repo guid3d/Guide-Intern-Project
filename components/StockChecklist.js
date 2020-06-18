@@ -97,12 +97,12 @@ const ModalScreen = ({ route, navigation }) => {
   return (
     <Query query={JittaChecklistQuery} variables={{ stockId: stockId }}>
       {({ loading, error, data }) => {
-        const stockChecklistData = _.get(data, "stock", []);
-        const checklistSummary = _.get(data, "stock.checklist.summary", [])
+        const stockChecklistData = _.get(data, "stock", {});
+        const checklistSummary = _.get(data, "stock.checklist.summary", {})
         const total  = checklistSummary.total;
         const totalChecked = checklistSummary.totalChecked;
         // console.log(stockChecklistData);
-        if (loading) return <View style={{flex:1 ,justifyContent:'center', alignItems:'center'}}><ActivityIndicator/></View>;
+        if (loading) return <View style={styles.center}><ActivityIndicator/></View>;
         if (error) return <Text>`Error! ${error.message}`</Text>;
         return (
           <View>
@@ -143,6 +143,7 @@ const ModalScreen = ({ route, navigation }) => {
 };
 
 const styles = StyleSheet.create({
+  center: { flex: 1, justifyContent: "center", alignItems: "center" },
   container: {
     // backgroundColor: "#fff",
     alignItems: "center",
@@ -158,7 +159,7 @@ const styles = StyleSheet.create({
     paddingTop: 15,
   },
   textTotal: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   rowFlatList: {
     flexDirection: "row",
@@ -185,7 +186,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
     paddingRight: 10,
     paddingTop: 5,
-  }
+  },
 });
 
 export default ModalScreen;

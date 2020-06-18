@@ -4,7 +4,7 @@ import {
   StyleSheet,
   Text,
   View,
-  SafeAreaView,
+  ActivityIndicator,
 } from "react-native";
 
 import { StockByRanking } from "./Query";
@@ -60,7 +60,7 @@ const StockList = ({ navigation }) => {
                   justifyContent: "center",
                 }}
               >
-                <Text>"Loading"</Text>
+                <ActivityIndicator/>
               </View>
             );
           if (error) return <Text>`Error! ${error.message}`</Text>;
