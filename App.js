@@ -73,7 +73,6 @@ function App() {
               gestureEnabled: true,
               cardOverlayEnabled: true,
               ...TransitionPresets.ModalPresentationIOS,
-              
             }}
           />
         </RootStack.Navigator>

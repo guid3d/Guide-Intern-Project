@@ -36,6 +36,7 @@ const StockList = ({ navigation }) => {
       >
         <ListItem
           title={title}
+          titleStyle={{color: "black"}}
           bottomDivider
           subtitle={id}
           subtitleStyle={{ color: "grey", fontSize: 13 }}

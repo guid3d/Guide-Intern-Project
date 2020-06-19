@@ -2,7 +2,7 @@ import * as React from "react";
 import {
   View,
   Text,
-  Button,
+  // Button,
   Image,
   SafeAreaView,
   StyleSheet,
@@ -17,7 +17,7 @@ import IconCheck from "./IconCheck";
 import IconTimes from "./IconTimes";
 
 import { AnimatedCircularProgress } from "react-native-circular-progress";
-import { Divider } from 'react-native-elements';
+import { Button } from 'react-native-elements';
 
 // import Ionicons from 'react-native-ionicons'
 
@@ -86,7 +86,7 @@ const ModalScreen = ({ route, navigation }) => {
     };
     return (
       <View style={styles.rowFlatList}>
-        <Text>{title}</Text>
+        <Text style={{color: '#333333'}}>{title}</Text>
         <CheckIcon check={check} />
       </View>
     );
@@ -105,9 +105,14 @@ const ModalScreen = ({ route, navigation }) => {
         if (loading) return <View style={styles.center}><ActivityIndicator/></View>;
         if (error) return <Text>`Error! ${error.message}`</Text>;
         return (
-          <View>
+          <SafeAreaView>
             <View style={styles.closeModal}>
-              <Button onPress={() => navigation.goBack()} title="Done" />
+              <Button
+                onPress={() => navigation.goBack()}
+                title="Done"
+                type="clear"
+              />
+              {/* <Ionicons ios="ios-add" android="md-add" /> */}
             </View>
             <View style={styles.container}>
               <Text style={styles.header}>{stockChecklistData.name}</Text>
@@ -115,6 +120,15 @@ const ModalScreen = ({ route, navigation }) => {
                 total={total}
                 totalChecked={totalChecked}
               />
+              <Text
+                style={{
+                  ...styles.rowFlatList,
+                  fontWeight: "bold",
+                  color: "black",
+                }}
+              >
+                Checklist Criteria
+              </Text>
               <FlatList
                 data={stockChecklistData.checklist.data}
                 renderItem={({ item }) => (
@@ -135,7 +149,7 @@ const ModalScreen = ({ route, navigation }) => {
                 </Text>
               </View>
             </View>
-          </View>
+          </SafeAreaView>
         );
       }}
     </Query>
@@ -161,18 +175,21 @@ const styles = StyleSheet.create({
   },
   textTotal: {
     fontWeight: "bold",
+    color: "black"
   },
   rowFlatList: {
     flexDirection: "row",
     justifyContent: "space-between",
     width: 350,
     padding: 6,
+    color: 'grey'
   },
   header: {
     fontSize: 20,
     fontWeight: "bold",
     textAlign: "center",
     paddingBottom: 10,
+    color: "black",
   },
   check: {
     color: "mediumaquamarine",

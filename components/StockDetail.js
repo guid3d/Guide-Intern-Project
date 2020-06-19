@@ -3,7 +3,7 @@ import {
   View,
   Text,
   StyleSheet,
-  Button,
+  // Button,
   Image,
   SafeAreaView,
 } from "react-native";
@@ -12,7 +12,7 @@ import TouchableScale from "react-native-touchable-scale";
 
 // import { Card } from "@paraboly/react-native-card";
 
-import { Card } from "react-native-elements";
+import { Button } from "react-native-elements";
 
 const DetailsScreen = ({ route, navigation }) => {
   const {
@@ -56,21 +56,21 @@ const DetailsScreen = ({ route, navigation }) => {
           <Text style={styles.thaititle}>{nativeName}</Text>
           
             <View style={styles.textRow}>
-              <Text style={{ paddingLeft: 20, fontWeight: "bold" }}>
+              <Text style={{ paddingLeft: 20, fontWeight: "bold", color: "black" }}>
                 Industry
               </Text>
-              <Text style={{ paddingRight: 20, textAlign: "right", maxWidth: 200 }}>
+              <Text style={{ paddingRight: 20, textAlign: "right", maxWidth: 200 , color: "black" }}>
                 {industry}
               </Text>
             </View>
             <View style={styles.textRow}>
-              <Text style={{ paddingLeft: 20, fontWeight: "bold" }}>
+              <Text style={{ paddingLeft: 20, fontWeight: "bold" , color: "black" }}>
                 Stock ID
               </Text>
-              <Text style={{ paddingRight: 20 }}>{stockId}</Text>
+              <Text style={{ paddingRight: 20 , color: "black" }}>{stockId}</Text>
             </View>
           </View>
-          <View style={{ paddingVertical: 10 }}>
+          <View style={{ paddingVertical: 10, paddingHorizontal: 20 }}>
             <Button
               onPress={() =>
                 navigation.navigate("StockChecklistModal", {
@@ -78,6 +78,7 @@ const DetailsScreen = ({ route, navigation }) => {
                 })
               }
               title="Open Checklist"
+              type='clear'
             />
           </View>
         </View>
@@ -132,6 +133,7 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     paddingBottom: 5,
     paddingHorizontal: 10,
+    color: "black",
   },
   jittaScoreCard: {
     borderTopLeftRadius: 20,
@@ -145,6 +147,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     paddingBottom: 20,
     paddingHorizontal: 10,
+    color: "grey",
   },
 });
 
