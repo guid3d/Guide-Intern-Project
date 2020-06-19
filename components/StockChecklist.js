@@ -147,8 +147,9 @@ const styles = StyleSheet.create({
   container: {
     // backgroundColor: "#fff",
     alignItems: "center",
+    justifyContent: "center",
     // justifyContent: "flex-start",
-    padding: 20,
+    // padding: 20,
     // paddingTop: 20,
   },
   rowTotal: {
