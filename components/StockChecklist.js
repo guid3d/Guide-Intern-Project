@@ -7,7 +7,8 @@ import {
   SafeAreaView,
   StyleSheet,
   FlatList,
-  ActivityIndicator
+  ActivityIndicator,
+  TouchableOpacity,
 } from "react-native";
 
 import { Query } from "react-apollo";
@@ -17,9 +18,11 @@ import IconCheck from "./IconCheck";
 import IconTimes from "./IconTimes";
 
 import { AnimatedCircularProgress } from "react-native-circular-progress";
-import { Button } from 'react-native-elements';
+import { Button } from "react-native-elements";
 
-// import Ionicons from 'react-native-ionicons'
+import Ionicons from "react-native-ionicons";
+
+import SafariModal from 'react-native-safari-modal';
 
 // import { TouchableHighlight, TouchableOpacity } from "react-native-gesture-handler";
 
@@ -44,14 +47,14 @@ const JittaChecklistQuery = gql`
 `;
 
 const ModalScreen = ({ route, navigation }) => {
-  const CircularChecklistProgress = ({total, totalChecked}) => {
-    var percentFill = (totalChecked/total)*100
+  const CircularChecklistProgress = ({ total, totalChecked }) => {
+    var percentFill = (totalChecked / total) * 100;
 
     const BarColor = () => {
-      if (percentFill > 60) return ("mediumaquamarine");
-      else if (percentFill > 30) return ("gold");
-      else return ("lightcoral")
-    }
+      if (percentFill > 60) return "mediumaquamarine";
+      else if (percentFill > 30) return "gold";
+      else return "lightcoral";
+    };
 
     return (
       <AnimatedCircularProgress
@@ -70,10 +73,10 @@ const ModalScreen = ({ route, navigation }) => {
 
         // renderCap={({ center }) => <Text>sdsd</Text>}
       >
-        {(fill) => 
-        // <Text style={styles.points}>{totalChecked}/{total}</Text>
-        <Text style={styles.points}>{Math.round(fill)}%</Text>
-        }
+        {(fill) => (
+          // <Text style={styles.points}>{totalChecked}/{total}</Text>
+          <Text style={styles.points}>{Math.round(fill)}%</Text>
+        )}
       </AnimatedCircularProgress>
     );
   };
@@ -81,12 +84,12 @@ const ModalScreen = ({ route, navigation }) => {
   const ChecklistItem = ({ title, check }) => {
     // console.log(check)
     const CheckIcon = ({ check }) => {
-      if (check === true) return <IconCheck />
-      if (check === false) return <IconTimes />
+      if (check === true) return <IconCheck />;
+      if (check === false) return <IconTimes />;
     };
     return (
       <View style={styles.rowFlatList}>
-        <Text style={{color: '#333333'}}>{title}</Text>
+        <Text style={{ color: "#333333" }}>{title}</Text>
         <CheckIcon check={check} />
       </View>
     );
@@ -98,21 +101,28 @@ const ModalScreen = ({ route, navigation }) => {
     <Query query={JittaChecklistQuery} variables={{ stockId: stockId }}>
       {({ loading, error, data }) => {
         const stockChecklistData = _.get(data, "stock", {});
-        const checklistSummary = _.get(data, "stock.checklist.summary", {})
-        const total  = checklistSummary.total;
+        const checklistSummary = _.get(data, "stock.checklist.summary", {});
+        const total = checklistSummary.total;
         const totalChecked = checklistSummary.totalChecked;
         // console.log(stockChecklistData);
-        if (loading) return <View style={styles.center}><ActivityIndicator/></View>;
+        if (loading)
+          return (
+            <View style={styles.center}>
+              <ActivityIndicator />
+            </View>
+          );
         if (error) return <Text>`Error! ${error.message}`</Text>;
         return (
           <SafeAreaView>
             <View style={styles.closeModal}>
-              <Button
-                onPress={() => navigation.goBack()}
-                title="Done"
-                type="clear"
-              />
-              {/* <Ionicons ios="ios-add" android="md-add" /> */}
+              <TouchableOpacity onPress={() => navigation.goBack()}>
+                <Ionicons
+                  ios="ios-close"
+                  android="ios-close"
+                  size={34}
+                  color="#79848F"
+                />
+              </TouchableOpacity>
             </View>
             <View style={styles.container}>
               <Text style={styles.header}>{stockChecklistData.name}</Text>
@@ -120,15 +130,23 @@ const ModalScreen = ({ route, navigation }) => {
                 total={total}
                 totalChecked={totalChecked}
               />
-              <Text
-                style={{
-                  ...styles.rowFlatList,
-                  fontWeight: "bold",
-                  color: "black",
-                }}
-              >
-                Checklist Criteria
-              </Text>
+              <TouchableOpacity onPress={() => {SafariModal.openURL('https://library.jitta.com/th/investing')}}>
+                <Text
+                  style={{
+                    ...styles.rowFlatList,
+                    paddingVertical: 6,
+                    fontWeight: "bold",
+                    color: "black",
+                  }}
+                >
+                  Checklist Criteria {' '}
+                  <Ionicons
+                    name="information-circle-outline"
+                    size={15}
+                    color="#79848F"
+                  />
+                </Text>
+              </TouchableOpacity>
               <FlatList
                 data={stockChecklistData.checklist.data}
                 renderItem={({ item }) => (
@@ -175,14 +193,14 @@ const styles = StyleSheet.create({
   },
   textTotal: {
     fontWeight: "bold",
-    color: "black"
+    color: "black",
   },
   rowFlatList: {
     flexDirection: "row",
     justifyContent: "space-between",
     width: 350,
     padding: 6,
-    color: 'grey'
+    color: "grey",
   },
   header: {
     fontSize: 20,
@@ -202,8 +220,8 @@ const styles = StyleSheet.create({
   },
   closeModal: {
     alignItems: "flex-end",
-    paddingRight: 10,
-    paddingTop: 5,
+    paddingRight: 15,
+    paddingTop: 10,
   },
 });
 

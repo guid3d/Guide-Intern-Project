@@ -3,9 +3,7 @@ import {
   View,
   Text,
   StyleSheet,
-  // Button,
-  Image,
-  SafeAreaView,
+  Share,
 } from "react-native";
 
 import TouchableScale from "react-native-touchable-scale";
@@ -13,6 +11,26 @@ import TouchableScale from "react-native-touchable-scale";
 // import { Card } from "@paraboly/react-native-card";
 
 import { Button } from "react-native-elements";
+
+const onShare = async (itemId) => {
+  try {
+    const result = await Share.share({
+      // message: itemId
+      url: 'https://www.jitta.com/stock/' + itemId
+    });
+    if (result.action === Share.sharedAction) {
+      if (result.activityType) {
+        // shared with activity type of result.activityType
+      } else {
+        // shared
+      }
+    } else if (result.action === Share.dismissedAction) {
+      // dismissed
+    }
+  } catch (error) {
+    alert(error.message);
+  }
+};
 
 const DetailsScreen = ({ route, navigation }) => {
   const {
@@ -52,22 +70,35 @@ const DetailsScreen = ({ route, navigation }) => {
               borderBottomEndRadius: 20,
             }}
           >
-          <Text style={styles.title}>{title}</Text>
-          <Text style={styles.thaititle}>{nativeName}</Text>
-          
+            <Text style={styles.title}>{title}</Text>
+            <Text style={styles.thaititle}>{nativeName}</Text>
+
             <View style={styles.textRow}>
-              <Text style={{ paddingLeft: 20, fontWeight: "bold", color: "black" }}>
+              <Text
+                style={{ paddingLeft: 20, fontWeight: "bold", color: "black" }}
+              >
                 Industry
               </Text>
-              <Text style={{ paddingRight: 20, textAlign: "right", maxWidth: 200 , color: "black" }}>
+              <Text
+                style={{
+                  paddingRight: 20,
+                  textAlign: "right",
+                  maxWidth: 200,
+                  color: "black",
+                }}
+              >
                 {industry}
               </Text>
             </View>
             <View style={styles.textRow}>
-              <Text style={{ paddingLeft: 20, fontWeight: "bold" , color: "black" }}>
+              <Text
+                style={{ paddingLeft: 20, fontWeight: "bold", color: "black" }}
+              >
                 Stock ID
               </Text>
-              <Text style={{ paddingRight: 20 , color: "black" }}>{stockId}</Text>
+              <Text style={{ paddingRight: 20, color: "black" }}>
+                {stockId}
+              </Text>
             </View>
           </View>
           <View style={{ paddingVertical: 10, paddingHorizontal: 20 }}>
@@ -78,8 +109,9 @@ const DetailsScreen = ({ route, navigation }) => {
                 })
               }
               title="Open Checklist"
-              type='clear'
+              type="clear"
             />
+            <Button onPress={() => onShare(itemId)} title="Share" type="clear" />
           </View>
         </View>
       </TouchableScale>

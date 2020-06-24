@@ -45,4 +45,6 @@ target 'GuideInternProject' do
   use_native_modules!
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
 
+  pod 'RNSafariModalController', :path => '../node_modules/react-native-safari-modal/ios'
+
 end
