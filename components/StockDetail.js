@@ -111,7 +111,18 @@ const DetailsScreen = ({ route, navigation }) => {
               title="Open Checklist"
               type="clear"
             />
-            <Button onPress={() => onShare(itemId)} title="Share" type="clear" />
+            <Button
+              onPress={() => onShare(itemId)}
+              title="Share"
+              type="clear"
+            />
+            <Button
+              onPress={() =>
+                navigation.navigate("Factsheet", { itemId: itemId })
+              }
+              title="Factsheet"
+              type="clear"
+            />
           </View>
         </View>
       </TouchableScale>

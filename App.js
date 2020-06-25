@@ -13,6 +13,7 @@ enableScreens();
 import StockListScreen from "./components/StockList";
 import StockDetailsScreen from "./components/StockDetail";
 import StockChecklistScreen from "./components/StockChecklist";
+import StockFactsheetScreen from "./components/StockFactsheet";
 import { client } from "./components/Query";
 
 import { ApolloProvider } from "react-apollo";
@@ -74,6 +75,16 @@ function App() {
               cardOverlayEnabled: true,
               ...TransitionPresets.ModalPresentationIOS,
             }}
+          />
+          <RootStack.Screen
+            name="Factsheet"
+            component={StockFactsheetScreen}
+            // options={{
+            //   gestureEnabled: true,
+            //   cardOverlayEnabled: true,
+            //   ...TransitionPresets.ModalPresentationIOS,
+            // }}
+            // options={({ route }) => ({ title: route.params.itemId })}
           />
         </RootStack.Navigator>
       </NavigationContainer>

@@ -13,6 +13,7 @@ import { Query } from "react-apollo";
 
 import { ListItem, Badge } from 'react-native-elements'
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { preventAutoHide } from "expo-splash-screen";
 
 var _ = require("lodash");
 
@@ -47,10 +48,12 @@ const StockList = ({ navigation }) => {
       </TouchableOpacity>
     );
   }
+
+  var pageNum = 0;
   return (
     <View style={styles.container}>
-      <Query query={StockByRanking} >
-        {({ loading, error, data }) => {
+      <Query query={StockByRanking} variables={{page: pageNum}}>
+        {({ loading, error, data, fetchMore }) => {
           const jittaRanking = _.get(data, "jittaRanking.data", []);
           if (loading)
             return (
@@ -62,10 +65,39 @@ const StockList = ({ navigation }) => {
                 }}
               >
                 <ActivityIndicator/>
+                
               </View>
             );
           if (error) return <Text>`Error! ${error.message}`</Text>;
-          return <FlatList data={jittaRanking} renderItem={renderItem} />;
+          return (
+            <FlatList
+              data={jittaRanking}
+              renderItem={renderItem}
+              onEndReached={() => fetchMore({
+                variables:{page: pageNum+1},
+                updateQuery: (prev, { fetchMoreResult }) => {
+                  const count = _.get(prev, "jittaRanking.count", null);
+                  const previousList = _.get(prev, "jittaRanking.data", []);
+                  const nextList = _.get(
+                    fetchMoreResult,
+                    "jittaRanking.data",
+                    []
+                  );
+                  if (!fetchMoreResult) return prev;
+                  // console.log(previousList);
+                  // return {data:[...previousList,...nextList]}
+                  return {
+                    jittaRanking: {
+                      __typename: null,
+                      count: count,
+                      data: [...previousList, ...nextList],
+                    },
+                  };
+                }
+              })}
+              onEndReachedThreshold={0.5}
+            />
+          );
         }}
       </Query>
     </View>

@@ -47,4 +47,6 @@ target 'GuideInternProject' do
 
   pod 'RNSafariModalController', :path => '../node_modules/react-native-safari-modal/ios'
 
+  pod 'react-native-webview', :path => '../node_modules/react-native-webview'
+
 end
