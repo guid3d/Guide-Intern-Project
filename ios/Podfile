@@ -49,4 +49,6 @@ target 'GuideInternProject' do
 
   pod 'react-native-webview', :path => '../node_modules/react-native-webview'
 
+  pod 'RNCPicker', :path => '../node_modules/@react-native-community/picker'
+
 end

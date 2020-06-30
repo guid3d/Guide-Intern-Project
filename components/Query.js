@@ -6,8 +6,8 @@ const client = new ApolloClient({
   });
   
   const StockByRanking = gql`
-    query stocklist($page: Int) {
-      jittaRanking(filter: { market: "TH", page: $page }) {
+    query stocklist($page: Int!, $market: String!, $sectors: [String]) {
+      jittaRanking(filter: { market: $market, page: $page, sectors: $sectors }) {
         count
         data {
           id

@@ -11,6 +11,7 @@ import TouchableScale from "react-native-touchable-scale";
 // import { Card } from "@paraboly/react-native-card";
 
 import { Button } from "react-native-elements";
+import FloatingFilter from "./FloatingFilter";
 
 const onShare = async (itemId) => {
   try {
@@ -123,6 +124,7 @@ const DetailsScreen = ({ route, navigation }) => {
               title="Factsheet"
               type="clear"
             />
+            
           </View>
         </View>
       </TouchableScale>
