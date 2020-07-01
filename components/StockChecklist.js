@@ -2,11 +2,13 @@ import * as React from "react";
 import {
   View,
   Text,
-  Button,
+  // Button,
   Image,
   SafeAreaView,
   StyleSheet,
-  FlatList
+  FlatList,
+  ActivityIndicator,
+  TouchableOpacity,
 } from "react-native";
 
 import { Query } from "react-apollo";
@@ -16,28 +18,28 @@ import IconCheck from "./IconCheck";
 import IconTimes from "./IconTimes";
 
 import { AnimatedCircularProgress } from "react-native-circular-progress";
-import { Divider } from 'react-native-elements';
+import { Button } from "react-native-elements";
 
-// import Ionicons from 'react-native-ionicons'
+import Ionicons from "react-native-ionicons";
+
+import SafariModal from 'react-native-safari-modal';
 
 // import { TouchableHighlight, TouchableOpacity } from "react-native-gesture-handler";
 
 var _ = require("lodash");
 
-const JittaScoreQuery = gql`
-  query jittaScore($stockId: Int) {
+const JittaChecklistQuery = gql`
+  query jittaChecklist($stockId: Int) {
     stock(stockId: $stockId) {
       name
-      jitta {
-        score {
-          last {
-            value
-          }
+      checklist {
+        summary {
+          total
+          totalChecked
         }
-        priceDiff {
-          last {
-            value
-          }
+        data {
+          name
+          isChecked
         }
       }
     }
@@ -45,15 +47,23 @@ const JittaScoreQuery = gql`
 `;
 
 const ModalScreen = ({ route, navigation }) => {
-  const CircularChecklistProgress = () => {
+  const CircularChecklistProgress = ({ total, totalChecked }) => {
+    var percentFill = (totalChecked / total) * 100;
+
+    const BarColor = () => {
+      if (percentFill > 60) return "mediumaquamarine";
+      else if (percentFill > 30) return "gold";
+      else return "lightcoral";
+    };
+
     return (
       <AnimatedCircularProgress
         size={250}
         width={20}
         backgroundWidth={10}
-        fill={100}
-        tintColor="white"
-        tintColorSecondary="mediumaquamarine"
+        fill={percentFill}
+        tintColor={BarColor()}
+        // tintColorSecondary={BarColor()}
         backgroundColor="#808080"
         padding={10}
         lineCap="round"
@@ -63,33 +73,23 @@ const ModalScreen = ({ route, navigation }) => {
 
         // renderCap={({ center }) => <Text>sdsd</Text>}
       >
-        {(fill) => <Text style={styles.points}>{Math.round(fill)}%</Text>}
+        {(fill) => (
+          // <Text style={styles.points}>{totalChecked}/{total}</Text>
+          <Text style={styles.points}>{Math.round(fill)}%</Text>
+        )}
       </AnimatedCircularProgress>
     );
   };
 
-  const DATAq = [
-    {
-      id: 1,
-      title: 'Jitta Score > 7',
-      check: true
-    },
-    {
-      id: 2,
-      title: 'Below Jitta Line > 20%',
-      check: false
-    }
-  ]
-
   const ChecklistItem = ({ title, check }) => {
     // console.log(check)
     const CheckIcon = ({ check }) => {
-      if (check === true) return <IconCheck />
-      if (check === false) return <IconTimes />
+      if (check === true) return <IconCheck />;
+      if (check === false) return <IconTimes />;
     };
     return (
       <View style={styles.rowFlatList}>
-        <Text>{title}</Text>
+        <Text style={{ color: "#333333" }}>{title}</Text>
         <CheckIcon check={check} />
       </View>
     );
@@ -97,60 +97,77 @@ const ModalScreen = ({ route, navigation }) => {
 
   const { stockId } = route.params;
 
-  const JittaScoreIsMoreThanSeven = ({ stockChecklistData }) => {
-    if (stockChecklistData.jitta.score.last.value > 7) {
-      return <IconCheck />;
-    } else return <IconTimes />;
-  };
-
-  const BelowJittaLineMoreThan20Per = ({ stockChecklistData }) => {
-    if (stockChecklistData.jitta.priceDiff.last.value < -0.2)
-      return <IconCheck />;
-    else return <IconTimes />;
-  };
-
   return (
-    <Query query={JittaScoreQuery} variables={{ stockId: stockId }}>
+    <Query query={JittaChecklistQuery} variables={{ stockId: stockId }}>
       {({ loading, error, data }) => {
-        const stockChecklistData = _.get(data, "stock", []);
+        const stockChecklistData = _.get(data, "stock", {});
+        const checklistSummary = _.get(data, "stock.checklist.summary", {});
+        const total = checklistSummary.total;
+        const totalChecked = checklistSummary.totalChecked;
         // console.log(stockChecklistData);
-        if (loading) return <Text></Text>;
+        if (loading)
+          return (
+            <View style={styles.center}>
+              <ActivityIndicator />
+            </View>
+          );
         if (error) return <Text>`Error! ${error.message}`</Text>;
         return (
-          <View>
-            
+          <SafeAreaView>
             <View style={styles.closeModal}>
-              <Button onPress={() => navigation.goBack()} title="Done" />
+              <TouchableOpacity onPress={() => navigation.goBack()}>
+                <Ionicons
+                  ios="ios-close"
+                  android="ios-close"
+                  size={34}
+                  color="#79848F"
+                />
+              </TouchableOpacity>
             </View>
             <View style={styles.container}>
               <Text style={styles.header}>{stockChecklistData.name}</Text>
-              <CircularChecklistProgress />
-              
-              {/* <FlatList
-                data={DATAq}
-                renderItem={({ item }) => (
-                  <ChecklistItem title={item.title} check={item.check} />
-                )}
-                keyExtractor={item => item.id}
-              /> */}
-              <View style={styles.row}>
-                <Text>Jitta Score {">"} 7</Text>
-                <Text>
-                  <JittaScoreIsMoreThanSeven
-                    stockChecklistData={stockChecklistData}
+              <CircularChecklistProgress
+                total={total}
+                totalChecked={totalChecked}
+              />
+              <TouchableOpacity onPress={() => {SafariModal.openURL('https://library.jitta.com/th/investing')}}>
+                <Text
+                  style={{
+                    ...styles.rowFlatList,
+                    paddingVertical: 6,
+                    fontWeight: "bold",
+                    color: "black",
+                  }}
+                >
+                  Checklist Criteria {' '}
+                  <Ionicons
+                    name="information-circle-outline"
+                    size={15}
+                    color="#79848F"
                   />
                 </Text>
-              </View>
-              <View style={styles.row}>
-                <Text>Below Jitta Line {">"} 20%</Text>
-                <Text>
-                  <BelowJittaLineMoreThan20Per
-                    stockChecklistData={stockChecklistData}
-                  />
+              </TouchableOpacity>
+              <FlatList
+                data={stockChecklistData.checklist.data}
+                renderItem={({ item }) => (
+                  <ChecklistItem title={item.name} check={item.isChecked} />
+                )}
+                keyExtractor={(item) => item.key}
+                style={{
+                  paddingBottom: 15,
+                  borderBottomWidth: 1,
+                  borderBottomColor: "#888",
+                }}
+              />
+              <View style={styles.rowTotal}>
+                <Text style={styles.textTotal}>Total</Text>
+                <Text style={styles.textTotal}>
+                  {totalChecked}/{total} (
+                  {Math.round((totalChecked / total) * 100)}%)
                 </Text>
               </View>
             </View>
-          </View>
+          </SafeAreaView>
         );
       }}
     </Query>
@@ -158,31 +175,39 @@ const ModalScreen = ({ route, navigation }) => {
 };
 
 const styles = StyleSheet.create({
+  center: { flex: 1, justifyContent: "center", alignItems: "center" },
   container: {
     // backgroundColor: "#fff",
     alignItems: "center",
+    justifyContent: "center",
     // justifyContent: "flex-start",
-    padding: 20,
+    // padding: 20,
     // paddingTop: 20,
   },
-  row: {
+  rowTotal: {
     flexDirection: "row",
     justifyContent: "space-between",
-    width: 300,
-    padding: 5,
+    width: 350,
+    padding: 6,
+    paddingTop: 15,
+  },
+  textTotal: {
+    fontWeight: "bold",
+    color: "black",
   },
   rowFlatList: {
-    // flex: 0.4,
     flexDirection: "row",
     justifyContent: "space-between",
-    width: 300,
+    width: 350,
     padding: 6,
+    color: "grey",
   },
   header: {
     fontSize: 20,
     fontWeight: "bold",
     textAlign: "center",
     paddingBottom: 10,
+    color: "black",
   },
   check: {
     color: "mediumaquamarine",
@@ -195,11 +220,9 @@ const styles = StyleSheet.create({
   },
   closeModal: {
     alignItems: "flex-end",
-    paddingRight: 10,
-    paddingTop: 5,
-    
-    
-  }
+    paddingRight: 15,
+    paddingTop: 10,
+  },
 });
 
 export default ModalScreen;

@@ -3,16 +3,35 @@ import {
   View,
   Text,
   StyleSheet,
-  Button,
-  Image,
-  SafeAreaView,
+  Share,
 } from "react-native";
 
 import TouchableScale from "react-native-touchable-scale";
 
 // import { Card } from "@paraboly/react-native-card";
 
-import { Card } from "react-native-elements";
+import { Button } from "react-native-elements";
+import FloatingFilter from "./FloatingFilter";
+
+const onShare = async (itemId) => {
+  try {
+    const result = await Share.share({
+      // message: itemId
+      url: 'https://www.jitta.com/stock/' + itemId
+    });
+    if (result.action === Share.sharedAction) {
+      if (result.activityType) {
+        // shared with activity type of result.activityType
+      } else {
+        // shared
+      }
+    } else if (result.action === Share.dismissedAction) {
+      // dismissed
+    }
+  } catch (error) {
+    alert(error.message);
+  }
+};
 
 const DetailsScreen = ({ route, navigation }) => {
   const {
@@ -52,25 +71,38 @@ const DetailsScreen = ({ route, navigation }) => {
               borderBottomEndRadius: 20,
             }}
           >
-          <Text style={styles.title}>{title}</Text>
-          <Text style={styles.thaititle}>{nativeName}</Text>
-          
+            <Text style={styles.title}>{title}</Text>
+            <Text style={styles.thaititle}>{nativeName}</Text>
+
             <View style={styles.textRow}>
-              <Text style={{ paddingLeft: 20, fontWeight: "bold" }}>
+              <Text
+                style={{ paddingLeft: 20, fontWeight: "bold", color: "black" }}
+              >
                 Industry
               </Text>
-              <Text style={{ paddingRight: 20, textAlign: "right", maxWidth: 200 }}>
+              <Text
+                style={{
+                  paddingRight: 20,
+                  textAlign: "right",
+                  maxWidth: 200,
+                  color: "black",
+                }}
+              >
                 {industry}
               </Text>
             </View>
             <View style={styles.textRow}>
-              <Text style={{ paddingLeft: 20, fontWeight: "bold" }}>
+              <Text
+                style={{ paddingLeft: 20, fontWeight: "bold", color: "black" }}
+              >
                 Stock ID
               </Text>
-              <Text style={{ paddingRight: 20 }}>{stockId}</Text>
+              <Text style={{ paddingRight: 20, color: "black" }}>
+                {stockId}
+              </Text>
             </View>
           </View>
-          <View style={{ paddingVertical: 10 }}>
+          <View style={{ paddingVertical: 10, paddingHorizontal: 20 }}>
             <Button
               onPress={() =>
                 navigation.navigate("StockChecklistModal", {
@@ -78,7 +110,21 @@ const DetailsScreen = ({ route, navigation }) => {
                 })
               }
               title="Open Checklist"
+              type="clear"
             />
+            <Button
+              onPress={() => onShare(itemId)}
+              title="Share"
+              type="clear"
+            />
+            <Button
+              onPress={() =>
+                navigation.navigate("Factsheet", { itemId: itemId })
+              }
+              title="Factsheet"
+              type="clear"
+            />
+            
           </View>
         </View>
       </TouchableScale>
@@ -132,6 +178,7 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     paddingBottom: 5,
     paddingHorizontal: 10,
+    color: "black",
   },
   jittaScoreCard: {
     borderTopLeftRadius: 20,
@@ -145,6 +192,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     paddingBottom: 20,
     paddingHorizontal: 10,
+    color: "grey",
   },
 });
 

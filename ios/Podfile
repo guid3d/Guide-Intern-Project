@@ -43,4 +43,12 @@ target 'GuideInternProject' do
 
   # react-native-cli autolinking
   use_native_modules!
+  pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
+
+  pod 'RNSafariModalController', :path => '../node_modules/react-native-safari-modal/ios'
+
+  pod 'react-native-webview', :path => '../node_modules/react-native-webview'
+
+  pod 'RNCPicker', :path => '../node_modules/@react-native-community/picker'
+
 end
