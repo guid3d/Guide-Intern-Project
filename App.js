@@ -1,10 +1,14 @@
 import * as React from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { NavigationContainer } from "@react-navigation/native";
 import {
   createStackNavigator,
   CardStyleInterpolators,
   TransitionPresets,
 } from "@react-navigation/stack";
+
+import { Button } from 'react-native'
 
 import { enableScreens } from 'react-native-screens'
 import { createNativeStackNavigator } from 'react-native-screens/native-stack';
@@ -17,6 +21,7 @@ import StockFactsheetScreen from "./components/StockFactsheet";
 import { client } from "./components/Query";
 
 import { ApolloProvider } from "react-apollo";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 const Stack = createNativeStackNavigator();
 const RootStack = createStackNavigator();
@@ -34,22 +39,21 @@ const StackScreen = () => {
         headerTitleStyle: {
           fontWeight: "bold",
         },
-        headerLargeTitle: true,
+        // headerLargeTitle: true, 
       }}
     >
       <Stack.Screen
         name="Home"
         component={StockListScreen}
         // options={{ headerTitle: props => <LogoTitle {...props} /> }}
-        // options={{
-        //   headerRight: () => (
-        //     <Button
-        //       onPress={() => alert("This  is a button!")}
-        //       title="Info"
-        //       color="#fff"
-        //     />
-        //   ),
-        // }}
+        options={{
+          headerRight: () => (
+            <TouchableOpacity
+              onPress={() => alert("Search")}
+              color="#fff"
+            ><FontAwesomeIcon icon={faSearch} color={"white"}/></TouchableOpacity>
+          ),
+        }}
       />
       <Stack.Screen
         name="Details"

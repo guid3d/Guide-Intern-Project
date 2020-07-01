@@ -1,10 +1,11 @@
-import React, {useState} from "react";
+import React, {useState, useCallback} from "react";
 import {
   FlatList,
   StyleSheet,
   Text,
   View,
   ActivityIndicator,
+  RefreshControl,
 } from "react-native";
 
 import { StockByRanking } from "./Query";
@@ -65,6 +66,10 @@ const StockList = ({ navigation }) => {
   const [market, setMarket] = useState("TH");
   const [sectors, setSectors] = useState(null);
   const [isFetching, setIsFetching] = useState(false);
+  // const onRefresh = () => {
+  //   setIsFetching(true)
+  //   refetch()
+  // }
   return (
     <View style={styles.container}>
       <Query
@@ -130,8 +135,11 @@ const StockList = ({ navigation }) => {
               ListFooterComponent={() =>
                 networkStatus === 3 && !isScrollToEnd && <ActivityIndicator />
               }
-              // onRefresh={}
-              // refreshing
+              onRefresh={() => {
+                setIsFetching(true)
+                refetch().then(() => setIsFetching(false))
+              }}
+              refreshing={isFetching}
             />
           );
         }}

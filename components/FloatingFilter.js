@@ -27,19 +27,19 @@ const FloatingFilter = (props) => {
         <RNPickerSelect
           onValueChange={props.onMarketChange}
           items={[
-            { label: "Thailand", value: "TH" },
-            { label: "United States", value: "US" },
-            { label: "Singapore", value: "SG" },
-            { label: "Vietnam", value: "VN" },
-            { label: "Hong Kong", value: "HK" },
-            { label: "United Kingdom", value: "UK" },
-            { label: "Japan", value: "JP" },
-            { label: "China", value: "CN" },
-            { label: "Taiwan", value: "TW" },
-            { label: "India", value: "IN" },
+            { label: "Thailand 🇹🇭", value: "TH" },
+            { label: "United States 🇺🇸", value: "US" },
+            { label: "Singapore 🇸🇬", value: "SG" },
+            { label: "Vietnam 🇻🇳", value: "VN" },
+            { label: "Hong Kong 🇭🇰", value: "HK" },
+            { label: "United Kingdom 🇬🇧", value: "UK" },
+            { label: "Japan 🇯🇵", value: "JP" },
+            { label: "China 🇨🇳", value: "CN" },
+            { label: "Taiwan 🇹🇼", value: "TW" },
+            { label: "India 🇮🇳", value: "IN" },
           ]}
           placeholder={{}}
-          textInputProps={{ alignSelf: "center" }}
+          textInputProps={{ alignSelf: "center", fontWeight:'bold' }}
         />
       </View>
       <View style={styles.containerElement}>
@@ -92,7 +92,7 @@ const FloatingFilter = (props) => {
             },
           ]}
           placeholder={allSectorPlaceholder}
-          textInputProps={{ alignSelf: "center", color: "black" }}
+          textInputProps={{ alignSelf: "center", color: "black", fontWeight:'bold' }}
         />
       </View>
       {/* </View> */}
