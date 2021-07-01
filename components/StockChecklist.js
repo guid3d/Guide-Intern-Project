@@ -16,11 +16,6 @@ import IconCheck from "./IconCheck";
 import IconTimes from "./IconTimes";
 
 import { AnimatedCircularProgress } from "react-native-circular-progress";
-import { Divider } from 'react-native-elements';
-
-// import Ionicons from 'react-native-ionicons'
-
-// import { TouchableHighlight, TouchableOpacity } from "react-native-gesture-handler";
 
 var _ = require("lodash");
 
@@ -60,38 +55,9 @@ const ModalScreen = ({ route, navigation }) => {
         arcSweepAngle={270}
         rotation={226.5}
         duration={2000}
-
-        // renderCap={({ center }) => <Text>sdsd</Text>}
       >
         {(fill) => <Text style={styles.points}>{Math.round(fill)}%</Text>}
       </AnimatedCircularProgress>
-    );
-  };
-
-  const DATAq = [
-    {
-      id: 1,
-      title: 'Jitta Score > 7',
-      check: true
-    },
-    {
-      id: 2,
-      title: 'Below Jitta Line > 20%',
-      check: false
-    }
-  ]
-
-  const ChecklistItem = ({ title, check }) => {
-    // console.log(check)
-    const CheckIcon = ({ check }) => {
-      if (check === true) return <IconCheck />
-      if (check === false) return <IconTimes />
-    };
-    return (
-      <View style={styles.rowFlatList}>
-        <Text>{title}</Text>
-        <CheckIcon check={check} />
-      </View>
     );
   };
 
@@ -125,14 +91,6 @@ const ModalScreen = ({ route, navigation }) => {
             <View style={styles.container}>
               <Text style={styles.header}>{stockChecklistData.name}</Text>
               <CircularChecklistProgress />
-              
-              {/* <FlatList
-                data={DATAq}
-                renderItem={({ item }) => (
-                  <ChecklistItem title={item.title} check={item.check} />
-                )}
-                keyExtractor={item => item.id}
-              /> */}
               <View style={styles.row}>
                 <Text>Jitta Score {">"} 7</Text>
                 <Text>
