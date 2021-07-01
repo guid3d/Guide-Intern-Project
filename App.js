@@ -42,21 +42,10 @@ const StackScreen = () => {
       <Stack.Screen
         name="Home"
         component={StockListScreen}
-        // options={{ headerTitle: props => <LogoTitle {...props} /> }}
-        // options={{
-        //   headerRight: () => (
-        //     <Button
-        //       onPress={() => alert("This  is a button!")}
-        //       title="Info"
-        //       color="#fff"
-        //     />
-        //   ),
-        // }}
       />
       <Stack.Screen
         name="Details"
         component={StockDetailsScreen}
-        // options={({ route }) => ({ title: route.params.itemId })}
         options={({ route }) => ({ title: route.params.itemId})}
       />
     </Stack.Navigator>
